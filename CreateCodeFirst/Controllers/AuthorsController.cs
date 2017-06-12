@@ -8,58 +8,58 @@ using System.Web.Http;
 
 namespace CreateCodeFirst.Controllers
 {
-    public class BooksController : ApiController
+    public class AuthorsController : ApiController
     {
         private DataContext _dataContext;
 
-        public BooksController()
+        public AuthorsController()
         {
             _dataContext = new DataContext();
         }
 
         // GET
-        public IEnumerable<Book> Get()
+        public IEnumerable<Author> Get()
         {
-            return _dataContext.Books;
+            return _dataContext.Authors;
         }
 
         // POST
-        public void Post(Book book)
+        public void Post(Author author)
         {
-            if (book != null)
+            if (author != null)
             {
-                _dataContext.Books.Add(book);
+                _dataContext.Authors.Add(author);
                 _dataContext.SaveChanges();
             }
         }
 
         // PUT
-        public void Put(Book book)
+        public void Put(Author author)
         {
-            var bookToUpdate = _dataContext.Books.Where(b => b.BookId == book.BookId).SingleOrDefault();
+            var authorToUpdate = _dataContext.Authors.Where(a => a.AuthorId == author.AuthorId).SingleOrDefault();
 
-            if (book != null)
+            if (author != null)
             {
-                bookToUpdate.Authors = book.Authors;
-                bookToUpdate.Isbn = book.Isbn;
-                bookToUpdate.Title = book.Title;
+                authorToUpdate.AuthorId = author.AuthorId;
+                authorToUpdate.FirstName = author.FirstName;
+                authorToUpdate.LastName = author.LastName;
 
                 _dataContext.SaveChanges();
             }
         }
 
         // DELETE
-        public void Delete(Book book)
+        public void Delete (Author author)
         {
-            if (book != null)
+            if (author != null)
             {
-                var bookToRemove = _dataContext.Books.Where(b => b.BookId == book.BookId).SingleOrDefault();
-                if (bookToRemove != null)
+                var authorToRemove = _dataContext.Authors.Where(a => a.AuthorId == author.AuthorId).SingleOrDefault();
+                if (authorToRemove != null)
                 {
-                    _dataContext.Books.Remove(bookToRemove);
+                    _dataContext.Authors.Remove(authorToRemove);
                     _dataContext.SaveChanges();
                 }
-            }
+            }            
         }
 
         protected override void Dispose(bool disposing)
