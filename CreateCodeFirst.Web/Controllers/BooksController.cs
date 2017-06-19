@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,30 +12,44 @@ namespace CreateCodeFirst.Web.Controllers
 {
     public class BooksController : Controller
     {
-        private HttpClient apiClient;
+        
+        private static HttpClient apiClient = new HttpClient();
         private DataContext dbContext = new DataContext();
 
-        public BooksController()
+        static async Task RunAsync()
         {
             apiClient = new HttpClient();
 
             apiClient.BaseAddress = new Uri("http://localhost:64073/");
-            apiClient.DefaultRequestHeaders.Accept.Clear();
-
-            var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
-            apiClient.DefaultRequestHeaders.Accept.Add(mediaType);
+            apiClient.DefaultRequestHeaders.Accept.Clear();            
+            apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         // GET: api/Books
-        public IEnumerable<Book> Index()
-        {            
-            return dbContext.Books;
+        static async Task GetBooks()
+        {
+            HttpResponseMessage response = await apiClient.GetAsync("api/produtos/1");
+            if (response.IsSuccessStatusCode)
+            {
+                Book book = await response.Content.ReadAsAsync<Book>();
+            }            
         }
 
         // GET / api/Books
         public ActionResult Create()
         {
             return View();
+        }
+
+        // POST
+        [HttpPost]
+        static async Task<Uri> CreateProductAsync(Book book)
+        {
+            HttpResponseMessage response = await apiClient.PostAsJsonAsync("api/Book", book);
+            response.EnsureSuccessStatusCode();
+
+            // Return the URI of the created resource.
+            return response.Headers.Location;
         }
 
         // POST: api/Books
