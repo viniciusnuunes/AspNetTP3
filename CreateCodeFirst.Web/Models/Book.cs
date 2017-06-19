@@ -9,7 +9,7 @@ namespace CreateCodeFirst.Web.Models
     public class Book
     {
         public int BookId { get; set; }
-
+        
         [Required]
         [Display(Name = "ISBN")]
         public string Isbn { get; set; }
